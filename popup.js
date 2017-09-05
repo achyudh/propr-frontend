@@ -4,47 +4,44 @@
  * @param {function(string)} callback - called when the URL of the current tab
  *   is found.
  */
-function getCurrentTabUrl(callback) {
-  // Query filter to be passed to chrome.tabs.query
-  var queryInfo = {
-    active: true,
-    currentWindow: true
-  };
 
-  chrome.tabs.query(queryInfo, function(tabs) {
-    // A window can only have one active tab at a time, so the array consists of
-    // exactly one tab.
-    var tab = tabs[0];
-    var url = tab.url;
-    console.assert(typeof url == 'string', 'tab.url should be a string');
-
-    callback(url);
-  });
-}
+// TODO: Move the following snippet to servlet
+// function getUrl() {
+//     return window.location.href;
+// }
 
 function getPullReqInfo(url, callback, errorCallback) {
+    var endpoint = 'https://api.github.com/repos/' + url.substring(19).replace("/pull/", "/pulls/");
+    var x = new XMLHttpRequest();
+    x.open('GET', endpoint);
+    x.responseType = 'json';
+    x.onload = function() {
+        var response = x.response;
+        if (!response || response.message == "Not Found") {
+            errorCallback('No response from GitHub API!');
+            return;
+        }
+        callback(response);
+    };
+    x.onerror = function() {
+        errorCallback('Network error!');
+    };
+    x.send();
+}
 
-  var endpoint = 'https://api.github.com/repos/' + url.substring(19).replace("/pull/", "/pulls/");
-  var x = new XMLHttpRequest();
-  x.open('GET', endpoint);
-  x.responseType = 'json';
-  x.onload = function() {
-    var response = x.response;
-    // TODO: Add not found response check below
-    if (!response || response.message == "Not Found") {
-      errorCallback('No response from GitHub API!');
-      return;
+function getQueryVariable(variable)
+{
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0; i<vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable){ return pair[1]; }
     }
-    callback(response);
-  };
-  x.onerror = function() {
-    errorCallback('Network error!');
-  };
-  x.send();
+    return(false);
 }
 
 function renderStatus(statusText) {
-  document.getElementById('status').textContent = statusText;
+    document.getElementById('status').textContent = statusText;
 }
 
 function sendToDB(response, starcount) {
@@ -52,22 +49,35 @@ function sendToDB(response, starcount) {
     var negativeText = document.getElementById('negative-text').value;
 }
 
+function isPositiveInteger(str) {
+    var n = Math.floor(Number(str));
+    return String(n) === str && n >= 0;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
-    if (url.indexOf("github.com") == -1 || url.indexOf("/pull/") == -1) {
-      renderStatus('ERROR: Not a Github Pull Request page!');
-      return;
+    // TODO: Move the following snippet to servlet
+    // var url = getUrl();
+    // if (url.indexOf("github.com") == -1 || url.indexOf("/pull/") == -1) {
+    //     renderStatus('ERROR: Not a Github Pull Request page!');
+    // }
+    var repoId = getQueryVariable("repo");
+    var prId = getQueryVariable("pr");
+    if (!isPositiveInteger(repoId) || !isPositiveInteger(prId)) {
+        renderStatus('ERROR: Invalid reference to Github Pull Request!');
     }
-    var starcount;
-    $('[type*="radio"]').change(function () {
-    var me = $(this);
-    starcount = me.attr('value');
-    });
-    renderStatus('Github Pull Request Feedback');  
-    document.getElementById('submit-button').addEventListener('click', function() {  
-    getPullReqInfo(url, function(response) { sendToDB(response, starcount) }, function(errorMessage) {
-      renderStatus('ERROR: ' + errorMessage);
-    });
-  });
-});
+    else {
+        var starCount;
+        $('[type*="radio"]').change(function () {
+            var me = $(this);
+            starCount = me.attr('value');
+        });
+        renderStatus('Github Pull Request Feedback');
+        document.getElementById('submit-button').addEventListener('click', function () {
+            getPullReqInfo(url, function (response) {
+                sendToDB(response, starCount)
+            }, function (errorMessage) {
+                renderStatus('ERROR: ' + errorMessage);
+            });
+        });
+    }
 });
