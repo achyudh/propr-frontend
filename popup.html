@@ -1,0 +1,113 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pull Request Feedback</title>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+      }
+      #status {
+        /* properties of status text */
+        font-size: 85%;
+        word-wrap: normal;
+        min-width: 380px;
+      }
+      #fieldhead {
+        /* properties of field heading */
+        font-size: 70%;
+        word-wrap: normal;
+        min-width: 380px;
+      }
+      .star-cb-group {
+        /* remove inline-block whitespace */
+        font-size: 0;
+        /* flip the order so we can use the + and ~ combinators */
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        /* the hidden clearer */
+      }
+      .star-cb-group * {
+        font-size: 1rem;
+      }
+      .star-cb-group > input {
+        display: none;
+      }
+      .star-cb-group > input + label {
+        /* only enough room for the star */
+        display: inline-block;
+        overflow: hidden;
+        text-indent: 9999px;
+        width: 1em;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .star-cb-group > input + label:before {
+        display: inline-block;
+        text-indent: -9999px;
+        content: "☆";
+        color: #888;
+      }
+      .star-cb-group > input:checked ~ label:before, .star-cb-group > input + label:hover ~ label:before, .star-cb-group > input + label:hover:before {
+        content: "★";
+        color: #e52;
+      }
+      .star-cb-group > .star-cb-clear + label {
+        text-indent: -9999px;
+        width: .5em;
+        margin-left: -.5em;
+      }
+      .star-cb-group > .star-cb-clear + label:before {
+        width: .5em;
+      }
+      .star-cb-group:hover > input + label:before {
+        content: "☆";
+        color: #888;
+      }
+      .star-cb-group:hover > input + label:hover ~ label:before, .star-cb-group:hover > input + label:hover:before {
+        content: "★";
+        color: #e52;
+      }
+      :root {
+        font-size: 2em;
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+      }
+      fieldset {
+        border: 0;
+        width: 7em;
+        margin: -0.5em auto;
+      }
+    </style>
+    <script src="js/jquery.js"></script>
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <div id="status"></div>
+    <hr>
+    <form>
+      <fieldset>
+        <span class="star-cb-group">
+          <input type="radio" id="rating-5" name="rating" value="5" /><label for="rating-5">5</label>
+          <input type="radio" id="rating-4" name="rating" value="4" /><label for="rating-4">4</label>
+          <input type="radio" id="rating-3" name="rating" value="3" /><label for="rating-3">3</label>
+          <input type="radio" id="rating-2" name="rating" value="2" /><label for="rating-2">2</label>
+          <input type="radio" id="rating-1" name="rating" value="1" /><label for="rating-1">1</label>
+          <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
+        </span>
+      </fieldset>
+    <label id="fieldhead">What do you like about this PR?</label> 
+    <textarea id="positive-text" rows="4" cols="52" placeholder="Enter the positive aspects of the pull request here..."></textarea>
+    <br>
+    <label id="fieldhead">What do you think could be improved?</label> 
+    <textarea id="negative-text" rows="4" cols="52" placeholder="Enter the negative aspects of the pull request here..."></textarea>
+    <button type="button" id="submit-button">Submit</button>
+    </form>
+  </body>
+</html>
+
