@@ -5,10 +5,9 @@
  *   is found.
  */
 
-// TODO: Move the following snippet to servlet
-// function getUrl() {
-//     return window.location.href;
-// }
+function getUrl() {
+    return window.location.href;
+}
 
 function getPullReqInfo(url, callback, errorCallback) {
     var endpoint = 'https://api.github.com/repos/' + url.substring(19).replace("/pull/", "/pulls/");
@@ -33,7 +32,7 @@ function getQueryVariable(variable)
 {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
-    for (var i=0; i<vars.length; i++) {
+    for (var i=0; i < vars.length; i++) {
         var pair = vars[i].split("=");
         if (pair[0] == variable){ return pair[1]; }
     }
@@ -44,9 +43,24 @@ function renderStatus(statusText) {
     document.getElementById('status').textContent = statusText;
 }
 
-function sendToDB(response, starcount) {
+function sendToDB(starcount, pr_id, repo_id) {
     var positiveText = document.getElementById('positive-text').value;
     var negativeText = document.getElementById('negative-text').value;
+
+    // Send form DATA as POST request to server
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://dutiap.st.ewi.tudelft.nl:60002/webhook", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        "action": "submit",
+        "pr_id": pr_id,
+        "repo_id": repo_id,
+        "positive_comments": positiveText,
+        "negative_comments": negativeText,
+        "rating": starcount
+    }));
+
+    alert("Thank you for your feedback!");
 }
 
 function isPositiveInteger(str) {
@@ -55,17 +69,16 @@ function isPositiveInteger(str) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // TODO: Move the following snippet to servlet
-    // var url = getUrl();
-    // if (url.indexOf("github.com") == -1 || url.indexOf("/pull/") == -1) {
-    //     renderStatus('ERROR: Not a Github Pull Request page!');
-    // }
-    var repoId = getQueryVariable("repo");
-    var prId = getQueryVariable("pr");
-    if (!isPositiveInteger(repoId) || !isPositiveInteger(prId)) {
+    var url = decodeURIComponent(getQueryVariable("url"));
+    var pr_id = decodeURIComponent(getQueryVariable("prid"));
+    var repo_id = decodeURIComponent(getQueryVariable("repoid"));
+    // Use this encoded URI for testing:
+    // https%3A%2F%2Fgithub.com%2Fprasadtalasila%2FMailingListParser%2Fpull%2F54
+    if (url == null || pr_id == null || repo_id == null) {
         renderStatus('ERROR: Invalid reference to Github Pull Request!');
     }
     else {
+        document.getElementById('pr-url').textContent = url;
         var starCount;
         $('[type*="radio"]').change(function () {
             var me = $(this);
@@ -73,11 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         renderStatus('Github Pull Request Feedback');
         document.getElementById('submit-button').addEventListener('click', function () {
-            getPullReqInfo(url, function (response) {
-                sendToDB(response, starCount)
-            }, function (errorMessage) {
-                renderStatus('ERROR: ' + errorMessage);
-            });
+                sendToDB(starCount, pr_id, repo_id);
         });
     }
 });
