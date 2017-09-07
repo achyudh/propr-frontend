@@ -43,10 +43,9 @@ function renderStatus(statusText) {
     document.getElementById('status').textContent = statusText;
 }
 
-function sendToDB(starcount, pr_id, repo_id) {
+function sendToDB(starcount, pr_id, repo_id, pr_num, url) {
     var positiveText = document.getElementById('positive-text').value;
     var negativeText = document.getElementById('negative-text').value;
-
     // Send form DATA as POST request to server
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://dutiap.st.ewi.tudelft.nl:60002/webhook", true);
@@ -54,7 +53,9 @@ function sendToDB(starcount, pr_id, repo_id) {
     xhr.send(JSON.stringify({
         "action": "submit",
         "pr_id": pr_id,
+        "pr_num":  pr_num,
         "repo_id": repo_id,
+        "full_repo_name": url,
         "positive_comments": positiveText,
         "negative_comments": negativeText,
         "rating": starcount
@@ -70,8 +71,9 @@ function isPositiveInteger(str) {
 
 document.addEventListener('DOMContentLoaded', function() {
     var url = decodeURIComponent(getQueryVariable("url"));
-    var pr_id = decodeURIComponent(getQueryVariable("prid"));
-    var repo_id = decodeURIComponent(getQueryVariable("repoid"));
+    var pr_id = getQueryVariable("prid");
+    var repo_id = getQueryVariable("repoid");
+    var pr_num = getQueryVariable("prnum");
     // Use this encoded URI for testing:
     // https%3A%2F%2Fgithub.com%2Fprasadtalasila%2FMailingListParser%2Fpull%2F54
     if (url == null || pr_id == null || repo_id == null) {
@@ -86,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         renderStatus('Github Pull Request Feedback');
         document.getElementById('submit-button').addEventListener('click', function () {
-                sendToDB(starCount, pr_id, repo_id);
+                sendToDB(starCount, pr_id, repo_id, pr_num, url);
         });
     }
 });
