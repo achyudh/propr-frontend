@@ -20,7 +20,9 @@
     <script src="js/jquery.js"></script>
     <script src="js/form.js"></script>
     <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="css/slider.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Merriweather" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png" />
 </head>
 
@@ -48,8 +50,11 @@
     <br>
     <textarea id="negative-text" rows="7" cols="80" placeholder="Enter the negative aspects of the pull request here..."></textarea>
     <div style="visibility:hidden; height:5pt"> Space </div>
-    <a href="#" class="button hvr-border-fade" id="submit-button"><i class="fa fa-paper-plane" aria-hidden="true"> </i> Submit</a>
+    <span class="labeltext">Send information on files modified in the pull request</span>
 
+    <div style="visibility:hidden; height:5pt"> Space </div>
+    <a href="#" class="button hvr-border-fade" id="submit-button"><i class="fa fa-paper-plane" aria-hidden="true"> </i> Submit</a>
+    <div id="thank-you"></div>
 </form>
 </body>
 </html>

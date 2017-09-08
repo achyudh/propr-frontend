@@ -62,6 +62,7 @@ function sendToDB(starcount, pr_id, repo_id, pr_num, url) {
     }));
 
     alert("Thank you for your feedback!");
+
 }
 
 function isPositiveInteger(str) {
@@ -70,17 +71,18 @@ function isPositiveInteger(str) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // This is the shortened URL of the repository
     var url = decodeURIComponent(getQueryVariable("url"));
+    // This is the url to redirect the user to when the form is filled
+    var return_url = decodeURIComponent(getQueryVariable("returnurl"));
     var pr_id = getQueryVariable("prid");
     var repo_id = getQueryVariable("repoid");
     var pr_num = getQueryVariable("prnum");
-    // Use this encoded URI for testing:
-    // https%3A%2F%2Fgithub.com%2Fprasadtalasila%2FMailingListParser%2Fpull%2F54
-    if (url == null || pr_id == null || repo_id == null) {
+    if (url == null || pr_id == null || repo_id == null || return_url == null || pr_num == null) {
         renderStatus('ERROR: Invalid reference to Github Pull Request!');
     }
     else {
-        document.getElementById('pr-url').textContent = url;
+        document.getElementById('pr-url').textContent = return_url;
         var starCount;
         $('[type*="radio"]').change(function () {
             var me = $(this);
