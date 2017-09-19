@@ -40,13 +40,6 @@
         <div class="header">
             <h1 class="brand-title">Github PR Feedback</h1>
             <h2 class="brand-tagline">Instructions on enabling pull request feedback for your repo</h2>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a class="pure-button" href="https://github.com/apps/pr-feedback">Login with Github</a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
 
@@ -54,32 +47,29 @@
         <div>
             <!-- A wrapper for all the posts -->
             <div class="posts">
-                <h1 class="content-subhead">Initial Setup Instructions</h1>
+                <h1 class="content-subhead">Next steps</h1>
 
-                <section class="post">
+                <section class="post" id="div-success">
                     <header class="post-header">
-
-                        <h2 class="post-title">Recommended method: Authorize our app through Github</h2>
-
+                        <h2 class="post-title">You have successfully logged in.</h2>
                     </header>
 
                     <div class="post-description">
-                                <ul>
-                                    <li>Authorize our app by logging into Github <a href="https://github.com/apps/pr-feedback">here</a></li>
-                                    <li>Select your repos for which you'd like to enable PR Feedback when prompted</a></li>
-                                    <li>Don't forget to fill in your feedback on the link posted by our bot whenever you close a PR</a></li>
-                                </ul>
+                        <h3>Please fill feedback when you close pull requests:</h3>
+                        <ul>
+                            <li>When you close pull requests, a link will be posted by our bot as a comment</li>
+                            <li>A feedback form will be presented to you upon clicking the link</li>
+                            <li>You will be redirected back to the pull request once you submit the feedback form</li>
+                            <i><b>Note:</b> If you don't see the link, refresh your page</i>
+                        </ul>
                     </div>
                 </section>
                 <br>
-                <section class="post">
+                <section class="post" id="div-failure">
                     <header class="post-header">
-
-                        <h2 class="post-title">Alternative setup: Add a webhook that connects to our servlet</h2>
-
+                        <h2 class="post-title">Try the alternative setup methods if there was any issue logging in.</h2>
                     </header>
-                    <div class="post-description">
-                        <ul>
+                    <ul class="post-description">
                             <li><h3>For private repositories:</h3>
                                 <ul>
                                     <li>To add a collaborator go to Settings, then Webhooks from your repository</li>
@@ -87,8 +77,6 @@
                                     <li>Continue setting up the webhook as described for public repositories in the next section</a></li>
                                 </ul>
                             </li>
-                        </ul>
-                        <ul>
                             <li><h3>For public repositories:</h3>
                                 <ul>
                                     <li>Add a webhook by going to Settings, then Webhooks from your repository</li>
@@ -97,7 +85,7 @@
                                     <li>Ensure that the only data that is being sent over is that related to Pull Requests. To see more about how to setup webhooks, see <a href="https://developer.github.com/webhooks/creating/">this page</a></li>
                                 </ul>
                             </li>
-                        </ul>
+                    </ul>
                     </div>
                 </section>
             </div>

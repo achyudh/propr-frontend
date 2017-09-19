@@ -5,8 +5,8 @@
  *   is found.
  */
 
-function getUrl() {
-    return window.location.href;
+function gotoUrl(url) {
+    window.location.assign(url);
 }
 
 function getPullReqInfo(url, callback, errorCallback) {
@@ -40,12 +40,13 @@ function getQueryVariable(variable)
 }
 
 function renderStatus(statusText) {
-    document.getElementById('status').textContent = statusText;
+    document.getElementById('pr-url').textContent = statusText;
 }
 
-function sendToDB(starcount, pr_id, repo_id, pr_num, url) {
-    var positiveText = document.getElementById('positive-text').value;
-    var negativeText = document.getElementById('negative-text').value;
+function sendToDB(starcount, pr_id, repo_id, pr_num, url, return_url, is_private_repo, instid) {
+    var positive_text = document.getElementById('positive-text').value;
+    var negative_text = document.getElementById('negative-text').value;
+    var file_option = !document.getElementById('file-option').checked;
     // Send form DATA as POST request to server
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://dutiap.st.ewi.tudelft.nl:60002/webhook", true);
@@ -56,18 +57,27 @@ function sendToDB(starcount, pr_id, repo_id, pr_num, url) {
         "pr_num":  pr_num,
         "repo_id": repo_id,
         "full_repo_name": url,
-        "positive_comments": positiveText,
-        "negative_comments": negativeText,
-        "rating": starcount
+        "positive_comments": positive_text,
+        "negative_comments": negative_text,
+        "rating": starcount,
+        "inst_id": instid,
+        "is_private_repo": is_private_repo,
+        "code_privacy": file_option
     }));
-
-    alert("Thank you for your feedback!");
-
+    setTimeout(function() {window.location = return_url;}, 10);
+    // window.location = return_url;
 }
 
 function isPositiveInteger(str) {
     var n = Math.floor(Number(str));
     return String(n) === str && n >= 0;
+}
+
+function buttonAnimation() {
+    document.getElementById("submit-icon").classList.toggle('fa-paper-plane');
+    document.getElementById("submit-icon").classList.toggle('fa-check');
+    document.getElementById("submit-button").style.background="rgb(28, 184, 65)";
+    document.getElementById("submit-button").textContent="Thank you!";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,19 +88,32 @@ document.addEventListener('DOMContentLoaded', function() {
     var pr_id = getQueryVariable("prid");
     var repo_id = getQueryVariable("repoid");
     var pr_num = getQueryVariable("prnum");
+    var is_private_repo = getQueryVariable("private");
+    var installation_id = getQueryVariable("instid");
+    if(is_private_repo == "True") {
+        document.getElementById('file-option').style.visibility = "visible";
+        document.getElementById('file-option-label').style.visibility = "visible";
+        document.getElementById('variable-break').style.lineHeight = "450%";
+        is_private_repo = true;
+    }
+    else {
+        is_private_repo = false;
+    }
+
     if (url == null || pr_id == null || repo_id == null || return_url == null || pr_num == null) {
         renderStatus('ERROR: Invalid reference to Github Pull Request!');
     }
+
     else {
-        document.getElementById('pr-url').textContent = return_url;
-        var starCount;
+        document.getElementById('pr-url').textContent = url;
+        var star_count;
         $('[type*="radio"]').change(function () {
             var me = $(this);
-            starCount = me.attr('value');
+            star_count = me.attr('value');
         });
-        renderStatus('Github Pull Request Feedback');
         document.getElementById('submit-button').addEventListener('click', function () {
-                sendToDB(starCount, pr_id, repo_id, pr_num, url);
+            buttonAnimation();
+            sendToDB(star_count, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
         });
     }
-});
+}, {once: true});

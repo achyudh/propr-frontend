@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Fill PR Feedback</title>
+        <style>
+        /*
+            Consider adding styles to the css folder
+            All existing styles havebeen moved to a separate CSS file for clarity
+        */
+            body {
+                background: url(img/cream_dust.png) repeat 0 0;
+            }
+        </style>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png" />
+        <!-- Form JS -->
+        <script src="js/feedback.js"></script>
+        <!-- Pure CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+        <!-- Elements CSS -->
+        <link rel="stylesheet" href="css/rating.css">
+        <link rel="stylesheet" href="css/slider.css">
+        <link rel="stylesheet" href="css/layouts/feedback.css">
+        <!-- jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Fonts CSS -->
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
+    </head>
+
+    <body>
+        <br style="line-height:20%;">
+        <h1>Github PR Feedback</h1>
+        <h3>
+            <div id="pr-url"></div>
+        </h3>
+        <fieldset>
+                <span class="star-cb-group">
+                  <input type="radio" id="rating-5" name="rating" value="5" /><label for="rating-5">5</label>
+                  <input type="radio" id="rating-4" name="rating" value="4" /><label for="rating-4">4</label>
+                  <input type="radio" id="rating-3" name="rating" value="3" /><label for="rating-3">3</label>
+                  <input type="radio" id="rating-2" name="rating" value="2" /><label for="rating-2">2</label>
+                  <input type="radio" id="rating-1" name="rating" value="1" /><label for="rating-1">1</label>
+                  <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
+                </span>
+        </fieldset>
+        <form class="pure-form">
+            <fieldset class="pure-group">
+                <h4>What do you like about this PR?</h4>
+                <textarea id="positive-text" rows="7" cols="80" placeholder="Enter the positive aspects of the pull request here..."></textarea>
+            </fieldset>
+
+            <br style="line-height: 500%;">
+
+            <fieldset class="pure-group">
+                <h4>What do you think could be improved?</h4>
+                <textarea id="negative-text" rows="7" cols="80" placeholder="Enter the negative aspects of the pull request here..."></textarea>
+            </fieldset>
+
+            <br id="variable-break" style="line-height: 300%;">
+
+            <label id="file-option-label" for="file-option" class="pure-checkbox" style="visibility:hidden; color: #696969; font-size: 0.85em; font-weight: bold">
+                <input id="file-option" type="checkbox" value="fileoption" style="vertical-align:middle;" checked>
+                     Send information on code modified in this pull request
+            </label>
+
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="pure-button" id="submit-button">
+                            <i class="fa fa-paper-plane" aria-hidden="true" id="submit-icon"></i> Submit</a>
+                    </li>
+                </ul>
+            </nav>
+            <div id="thank-you"></div>
+        </form>
+
+    </body>
+</html>
+
