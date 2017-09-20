@@ -43,9 +43,10 @@ function renderStatus(statusText) {
     document.getElementById('pr-url').textContent = statusText;
 }
 
-function sendToDB(starcount, pr_id, repo_id, pr_num, url, return_url, is_private_repo, instid) {
+function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, instid) {
     var positive_text = document.getElementById('positive-text').value;
     var negative_text = document.getElementById('negative-text').value;
+    var review_time = document.getElementById('review-time').value;
     var file_option = !document.getElementById('file-option').checked;
     // Send form DATA as POST request to server
     var xhr = new XMLHttpRequest();
@@ -59,7 +60,10 @@ function sendToDB(starcount, pr_id, repo_id, pr_num, url, return_url, is_private
         "full_repo_name": url,
         "positive_comments": positive_text,
         "negative_comments": negative_text,
-        "rating": starcount,
+        "rating": star_count,
+        "rating_before_discussion": star_count_nodis,
+        "necessity": necessity,
+        "review_time": review_time,
         "inst_id": instid,
         "is_private_repo": is_private_repo,
         "code_privacy": file_option
@@ -76,7 +80,7 @@ function isPositiveInteger(str) {
 function buttonAnimation() {
     document.getElementById("submit-icon").classList.toggle('fa-paper-plane');
     document.getElementById("submit-icon").classList.toggle('fa-check');
-    document.getElementById("submit-button").style.background="rgb(28, 184, 65)";
+    document.getElementById("submit-button").style.background="#4d85d1";
     document.getElementById("submit-button").textContent="Thank you!";
 }
 
@@ -107,13 +111,23 @@ document.addEventListener('DOMContentLoaded', function() {
     else {
         document.getElementById('pr-url').textContent = url;
         var star_count;
-        $('[type*="radio"]').change(function () {
+        $('[name*="rating1"]').change(function () {
             var me = $(this);
             star_count = me.attr('value');
         });
+        var star_count_nodis;
+        $('[name*="rating2"]').change(function () {
+            var me = $(this);
+            star_count_nodis = me.attr('value');
+        });
+        var necessity;
+        $('[name*="rating2"]').change(function () {
+            var me = $(this);
+            necessity = me.attr('value');
+        });
         document.getElementById('submit-button').addEventListener('click', function () {
             buttonAnimation();
-            sendToDB(star_count, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
+            sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
         });
     }
 }, {once: true});

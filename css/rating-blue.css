@@ -1,18 +1,18 @@
 
-.star-cb-group {
+.star-cb-group-blue {
     /* remove inline-block whitespace */
     font-size: 0;
     /* flip the order so we can use the + and ~ combinators */
     unicode-bidi: bidi-override;
     direction: rtl;
 }
-.star-cb-group * {
+.star-cb-group-blue * {
     font-size: 40pt;
 }
-.star-cb-group > input {
+.star-cb-group-blue > input {
     display: none;
 }
-.star-cb-group > input + label {
+.star-cb-group-blue > input + label {
     /* only enough room for the star */
     display: inline-block;
     overflow: hidden;
@@ -21,34 +21,28 @@
     white-space: nowrap;
     cursor: pointer;
 }
-.star-cb-group > input + label:before {
+.star-cb-group-blue > input + label:before {
     display: inline-block;
     text-indent: -9999px;
     content: "☆";
     color: #888;
 }
-.star-cb-group > input:checked ~ label:before, .star-cb-group > input + label:hover ~ label:before, .star-cb-group > input + label:hover:before {
+.star-cb-group-blue > input:checked ~ label:before, .star-cb-group-blue > input + label:hover ~ label:before, .star-cb-group-blue > input + label:hover:before {
     content: "★";
-    color: #e52;
+    color: #4d85d1;
 }
-.star-cb-group > .star-cb-clear + label {
+.star-cb-group-blue > .star-cb-clear + label {
     text-indent: -9999px;
     width: .5em;
 }
-.star-cb-group > .star-cb-clear + label:before {
+.star-cb-group-blue > .star-cb-clear + label:before {
     width: .5em;
 }
-.star-cb-group:hover > input + label:before {
+.star-cb-group-blue:hover > input + label:before {
     content: "☆";
     color: #888;
 }
-.star-cb-group:hover > input + label:hover ~ label:before, .star-cb-group:hover > input + label:hover:before {
+.star-cb-group-blue:hover > input + label:hover ~ label:before, .star-cb-group-blue:hover > input + label:hover:before {
     content: "★";
-    color: #e52;
-}
-fieldset {
-    border: 0;
-    margin: 0 auto;
-    width: 280px;
-    height: 60px;
+    color: #4d85d1;
 }
