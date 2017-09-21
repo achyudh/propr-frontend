@@ -35,28 +35,6 @@
             <div id="pr-url"></div>
         </h3>
         <fieldset>
-            <span class="star-cb-group">
-                  <input type="radio" id="rating1-5" name="rating1" value="5" /><label for="rating1-5">5</label>
-                  <input type="radio" id="rating1-4" name="rating1" value="4" /><label for="rating1-4">4</label>
-                  <input type="radio" id="rating1-3" name="rating1" value="3" /><label for="rating1-3">3</label>
-                  <input type="radio" id="rating1-2" name="rating1" value="2" /><label for="rating1-2">2</label>
-                  <input type="radio" id="rating1-1" name="rating1" value="1" /><label for="rating1-1">1</label>
-                  <input type="radio" id="rating1-0" name="rating1" value="0" class="star-cb-clear" /><label for="rating1-0">0</label>
-                </span>
-        </fieldset>
-        <span style="text-align: center;display: block;"><i>How would you rate this PR?</i></span>
-        <fieldset>
-            <span class="star-cb-group">
-                  <input type="radio" id="rating2-5" name="rating2" value="5" /><label for="rating2-5">5</label>
-                  <input type="radio" id="rating2-4" name="rating2" value="4" /><label for="rating2-4">4</label>
-                  <input type="radio" id="rating2-3" name="rating2" value="3" /><label for="rating2-3">3</label>
-                  <input type="radio" id="rating2-2" name="rating2" value="2" /><label for="rating2-2">2</label>
-                  <input type="radio" id="rating2-1" name="rating2" value="1" /><label for="rating2-1">1</label>
-                  <input type="radio" id="rating2-0" name="rating2" value="0" class="star-cb-clear" /><label for="rating2-0">0</label>
-                </span>
-        </fieldset>
-        <span style="text-align: center;display: block;"><i>How would you have rated this PR before any discussion with the author?</i></span>
-        <fieldset>
             <span class="star-cb-group-blue">
                   <input type="radio" id="rating3-5" name="rating3" value="5" /><label for="rating3-5">5</label>
                   <input type="radio" id="rating3-4" name="rating3" value="4" /><label for="rating3-4">4</label>
@@ -66,34 +44,62 @@
                   <input type="radio" id="rating3-0" name="rating3" value="0" class="star-cb-clear" /><label for="rating3-0">0</label>
                 </span>
         </fieldset>
-        <span style="text-align: center;display: block;"><i>How do you rate the necessity of these changes?</i></span>
-        <br style="line-height: 200%;">
-        <hr>
+        <span style="text-align: center;display: block;"><i>How would you rate the necessity of this patch?</i></span>
         <br>
         <form class="pure-form">
             <fieldset class="pure-group">
-                <h4 style="width: 400px">How long did you take to review this PR?</h4>
+                <h4 style="width: 400px">How long did you take to review this patch?</h4>
                 <input id="review-time" type="text" placeholder="Number of minutes">
             </fieldset>
+        </form>
+        <hr>
 
-            <div style="height: 8px"> </div>
+        <fieldset>
+            <span class="star-cb-group">
+                  <input type="radio" id="rating1-5" name="rating1" value="5" /><label for="rating1-5">5</label>
+                  <input type="radio" id="rating1-4" name="rating1" value="4" /><label for="rating1-4">4</label>
+                  <input type="radio" id="rating1-3" name="rating1" value="3" /><label for="rating1-3">3</label>
+                  <input type="radio" id="rating1-2" name="rating1" value="2" /><label for="rating1-2">2</label>
+                  <input type="radio" id="rating1-1" name="rating1" value="1" /><label for="rating1-1">1</label>
+                  <input type="radio" id="rating1-0" name="rating1" value="0" class="star-cb-clear" /><label for="rating1-0">0</label>
+                </span>
+        </fieldset>
+
+        <span style="text-align: center;display: block;"><i>How would you rate the <b>reviewability</b> of the submitted patch?</i></span>
+        <br>
+        <form class="pure-form">
 
             <fieldset class="pure-group">
-                <h4>What do you like about this PR?</h4>
-                <textarea id="positive-text" rows="6" cols="80" placeholder="Enter the positive aspects of the pull request here..."></textarea>
+                <h4>What aspects of this patch, if any, contribute to its reviewability?</h4>
+                <textarea id="positive-text" rows="6" cols="80" placeholder="Enter here..."></textarea>
             </fieldset>
 
             <br style="line-height: 600%;">
 
             <fieldset class="pure-group">
-                <h4>What do you think could be improved?</h4>
-                <textarea id="negative-text" rows="6" cols="80" placeholder="Enter the negative aspects of the pull request here..."></textarea>
+                <h4>What aspects of this patch, if any, should be improved to enhance its reviewability?</h4>
+                <textarea id="negative-text" rows="6" cols="80" placeholder="Enter here..."></textarea>
             </fieldset>
+        </form>
 
-            <br>
-            <br id="variable-break" style="line-height: 300%;">
+        <br style="line-height: 575%;">
+        <hr>
+            <fieldset>
+                <span class="star-cb-group">
+                  <input type="radio" id="rating2-5" name="rating2" value="5" /><label for="rating2-5">5</label>
+                  <input type="radio" id="rating2-4" name="rating2" value="4" /><label for="rating2-4">4</label>
+                  <input type="radio" id="rating2-3" name="rating2" value="3" /><label for="rating2-3">3</label>
+                  <input type="radio" id="rating2-2" name="rating2" value="2" /><label for="rating2-2">2</label>
+                  <input type="radio" id="rating2-1" name="rating2" value="1" /><label for="rating2-1">1</label>
+                  <input type="radio" id="rating2-0" name="rating2" value="0" class="star-cb-clear" /><label for="rating2-0">0</label>
+                </span>
+            </fieldset>
+        <span style="text-align: center;display: block;"><i>How would you have rated the <b>reviewability</b> of this patch before any discussion with the author?</i></span>
 
-            <label id="file-option-label" for="file-option" class="pure-checkbox" style="visibility:hidden; color: #696969; font-size: 0.85em; font-weight: bold">
+        <br style="line-height: 100%;">
+        <hr>
+
+        <label id="file-option-label" for="file-option" class="pure-checkbox" style="display: none; color: #696969; font-size: 0.85em; font-weight: bold">
                 <input id="file-option" type="checkbox" value="fileoption" style="vertical-align:middle;" checked>
                      Send information on code modified in this pull request
             </label>
@@ -106,9 +112,7 @@
                     </li>
                 </ul>
             </nav>
-            <div id="thank-you"></div>
-        </form>
-
+    <br>
     </body>
 </html>
 

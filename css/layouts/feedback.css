@@ -44,7 +44,7 @@ hr {
     -o-transform: scale(1.3); /* Opera */
     margin-left: 0.2em;
     margin-right: 0.1em;
-    visibility:hidden;
+    display:none;
 }
 
 .nav-list {

@@ -5,8 +5,11 @@
  *   is found.
  */
 
-function gotoUrl(url) {
-    window.location.assign(url);
+function isInt(value) {
+    return !isNaN(value) &&
+        parseInt(Number(value)) == value &&
+        Number(value) > -1 &&
+        !isNaN(parseInt(value, 10));
 }
 
 function getPullReqInfo(url, callback, errorCallback) {
@@ -50,7 +53,7 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
     var file_option = !document.getElementById('file-option').checked;
     // Send form DATA as POST request to server
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://dutiap.st.ewi.tudelft.nl:60002/webhook", true);
+    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/webhook", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         "action": "submit",
@@ -95,9 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var is_private_repo = getQueryVariable("private");
     var installation_id = getQueryVariable("instid");
     if(is_private_repo == "True") {
-        document.getElementById('file-option').style.visibility = "visible";
-        document.getElementById('file-option-label').style.visibility = "visible";
-        document.getElementById('variable-break').style.lineHeight = "450%";
+        document.getElementById('file-option').style.display = "inline";
+        document.getElementById('file-option-label').style.display = "inline";
+        // document.getElementById('variable-break').style.lineHeight = "450%";
         is_private_repo = true;
     }
     else {
@@ -121,13 +124,17 @@ document.addEventListener('DOMContentLoaded', function() {
             star_count_nodis = me.attr('value');
         });
         var necessity;
-        $('[name*="rating2"]').change(function () {
+        $('[name*="rating3"]').change(function () {
             var me = $(this);
             necessity = me.attr('value');
         });
         document.getElementById('submit-button').addEventListener('click', function () {
-            buttonAnimation();
-            sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
+            if (isInt(document.getElementById('review-time').value, 10)) {
+                buttonAnimation();
+                sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
+            }
+            else
+                alert("Please enter a number (in minutes) for review time.")
         });
     }
 }, {once: true});
