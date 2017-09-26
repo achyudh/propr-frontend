@@ -53,12 +53,13 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
     var file_option = !document.getElementById('file-option').checked;
     // Send form DATA as POST request to server
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/webhook", true);
+    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-        "action": "submit",
+        "action": "feedback",
         "pr_id": pr_id,
         "pr_num":  pr_num,
+        "pr_url": return_url,
         "repo_id": repo_id,
         "full_repo_name": url,
         "positive_comments": positive_text,
@@ -71,8 +72,12 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
         "is_private_repo": is_private_repo,
         "code_privacy": file_option
     }));
-    setTimeout(function() {window.location = return_url;}, 10);
-    // window.location = return_url;
+    var redir_url;
+    if (xhr.status === 200) {
+        redir_url = xhr.responseText;
+    }
+    setTimeout(function() {window.location = redir_url;}, 10);
+    window.location = redir_url;
 }
 
 function isPositiveInteger(str) {
