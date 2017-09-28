@@ -51,12 +51,33 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
     var negative_text = document.getElementById('negative-text').value;
     var review_time = document.getElementById('review-time').value;
     var file_option = !document.getElementById('file-option').checked;
-    // Send form DATA as POST request to server
+    // Send feedback DATA as POST request to server
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         "action": "feedback",
+        "pr_id": pr_id,
+        "pr_num":  pr_num,
+        "pr_url": return_url,
+        "repo_id": repo_id,
+        "full_repo_name": url,
+        "positive_comments": positive_text,
+        "negative_comments": negative_text,
+        "rating": star_count,
+        "rating_before_discussion": star_count_nodis,
+        "necessity": necessity,
+        "review_time": review_time,
+        "inst_id": instid,
+        "is_private_repo": is_private_repo,
+        "code_privacy": file_option
+    }));
+    // Send context DATA as POST request to server
+    var xhr_context = new XMLHttpRequest();
+    xhr_context.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", true);
+    xhr_context.setRequestHeader('Content-Type', 'application/json');
+    xhr_context.send(JSON.stringify({
+        "action": "context",
         "pr_id": pr_id,
         "pr_num":  pr_num,
         "pr_url": return_url,
