@@ -1,10 +1,3 @@
-/**
- * Get the current URL.
- *
- * @param {function(string)} callback - called when the URL of the current tab
- *   is found.
- */
-
 function isInt(value) {
     return !isNaN(value) &&
         parseInt(Number(value)) == value &&
@@ -46,14 +39,14 @@ function renderStatus(statusText) {
     document.getElementById('pr-url').textContent = statusText;
 }
 
-function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, instid) {
+function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, instid, state) {
     var positive_text = document.getElementById('positive-text').value;
     var negative_text = document.getElementById('negative-text').value;
     var review_time = document.getElementById('review-time').value;
     var file_option = !document.getElementById('file-option').checked;
     // Send feedback DATA as POST request to server
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", false);
+    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         "action": "feedback",
@@ -70,35 +63,11 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
         "review_time": review_time,
         "inst_id": instid,
         "is_private_repo": is_private_repo,
-        "code_privacy": file_option
+        "code_privacy": file_option,
+        "state": state,
     }));
-    // Send context DATA as POST request to server
-    var xhr_context = new XMLHttpRequest();
-    xhr_context.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", true);
-    xhr_context.setRequestHeader('Content-Type', 'application/json');
-    xhr_context.send(JSON.stringify({
-        "action": "context",
-        "pr_id": pr_id,
-        "pr_num":  pr_num,
-        "pr_url": return_url,
-        "repo_id": repo_id,
-        "full_repo_name": url,
-        "positive_comments": positive_text,
-        "negative_comments": negative_text,
-        "rating": star_count,
-        "rating_before_discussion": star_count_nodis,
-        "necessity": necessity,
-        "review_time": review_time,
-        "inst_id": instid,
-        "is_private_repo": is_private_repo,
-        "code_privacy": file_option
-    }));
-    var redir_url;
-    if (xhr.status === 200) {
-        redir_url = xhr.responseText;
-    }
-    setTimeout(function() {window.location = redir_url;}, 10);
-    window.location = redir_url;
+    setTimeout(function() {window.location = return_url;}, 10);
+    window.location = return_url;
 }
 
 function isPositiveInteger(str) {
@@ -113,13 +82,36 @@ function buttonAnimation() {
     document.getElementById("submit-button").textContent="Thank you!";
 }
 
+function checkHistory(user_id, return_url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/feedback", false);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        "action": "history",
+        "pr_url": return_url,
+        "user_id": user_id
+    }));
+    if (xhr.status == 200) {
+        document.getElementById('negative-text').value = ;
+        document.getElementById('positive-text').value = ;
+        document.getElementById('review-time').value = ;
+        document.getElementById('rating1').value
+        document.getElementById('rating2').value
+        document.getElementById('rating3').value
+        document.getElementById('file-option').checked
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // This is the shortened URL of the repository
-    var url = decodeURIComponent(getQueryVariable("url"));
     // This is the url to redirect the user to when the form is filled
     var return_url = decodeURIComponent(getQueryVariable("returnurl"));
+    var user_id = getQueryVariable("userid");
+    checkHistory(user_id, return_url);
+    // This is the shortened URL of the repository
+    var url = decodeURIComponent(getQueryVariable("url"));
     var pr_id = getQueryVariable("prid");
     var repo_id = getQueryVariable("repoid");
+    var state = getQueryVariable("state");
     var pr_num = getQueryVariable("prnum");
     var is_private_repo = getQueryVariable("private");
     var installation_id = getQueryVariable("instid");
@@ -155,9 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
             necessity = me.attr('value');
         });
         document.getElementById('submit-button').addEventListener('click', function () {
-            if (isInt(document.getElementById('review-time').value, 10)) {
+            var review_time_text = document.getElementById('review-time').value;
+            if (isInt(review_time_text, 10) || review_time_text === "") {
                 buttonAnimation();
-                sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id);
+                sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id, state);
             }
             else
                 alert("Please enter a number (in minutes) for review time.")
