@@ -64,7 +64,7 @@ function sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_nu
         "inst_id": instid,
         "is_private_repo": is_private_repo,
         "code_privacy": file_option,
-        "state": state,
+        "state": state
     }));
     setTimeout(function() {window.location = return_url;}, 10);
     window.location = return_url;
@@ -82,9 +82,54 @@ function buttonAnimation() {
     document.getElementById("submit-button").textContent="Thank you!";
 }
 
+function restoreRating3(necessity) {
+    if (necessity == 5)
+        document.getElementById('rating3-5').checked = true;
+    else if (necessity == 4)
+        document.getElementById('rating3-4').checked = true;
+    else if (necessity == 3)
+        document.getElementById('rating3-3').checked = true;
+    else if (necessity == 2)
+        document.getElementById('rating3-2').checked = true;
+    else if (necessity == 1)
+        document.getElementById('rating3-1').checked = true;
+    else if (necessity == 0)
+        document.getElementById('rating3-0').checked = true;
+}
+
+function restoreRating2(rating_before_discussion) {
+    if (rating_before_discussion == 5)
+        document.getElementById('rating2-5').checked = true;
+    else if (rating_before_discussion == 4)
+        document.getElementById('rating2-4').checked = true;
+    else if (rating_before_discussion == 3)
+        document.getElementById('rating2-3').checked = true;
+    else if (rating_before_discussion == 2)
+        document.getElementById('rating2-2').checked = true;
+    else if (rating_before_discussion == 1)
+        document.getElementById('rating2-1').checked = true;
+    else if (rating_before_discussion == 0)
+        document.getElementById('rating2-0').checked = true;
+}
+
+function restoreRating1(rating) {
+    if (rating == 5)
+        document.getElementById('rating1-5').checked = true;
+    else if (rating == 4)
+        document.getElementById('rating1-4').checked = true;
+    else if (rating == 3)
+        document.getElementById('rating1-3').checked = true;
+    else if (rating == 2)
+        document.getElementById('rating1-2').checked = true;
+    else if (rating == 1)
+        document.getElementById('rating1-1').checked = true;
+    else if (rating == 0)
+        document.getElementById('rating1-0').checked = true;
+}
+
 function checkHistory(user_id, return_url) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/feedback", false);
+    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60002/submit", false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         "action": "history",
@@ -96,10 +141,26 @@ function checkHistory(user_id, return_url) {
         document.getElementById('negative-text').value = response.positive_comments;
         document.getElementById('positive-text').value = response.negative_comments;
         document.getElementById('review-time').value = response.review_time;
-        document.getElementById('rating1').value = response.rating;
-        document.getElementById('rating2').value = response.rating_before_discussion;
-        document.getElementById('rating3').value = response.necessity;
+        if (response.hasOwnProperty('necessity')) {
+            restoreRating3(response.necessity);
+            $('[name*="rating3"]').one('ready', function () {
+                $(this).attr('value', response.necessity);
+            });
+        }
+        if (response.hasOwnProperty('rating_before_discussion')) {
+            restoreRating2(response.rating_before_discussion);
+            $('[name*="rating2"]').one('ready', function () {
+                $(this).attr('value', response.rating_before_discussion);
+            });
+        }
+        if (response.hasOwnProperty('rating')) {
+            restoreRating1(response.rating);
+            $('[name*="rating1"]').one('ready', function () {
+                $(this).attr('value', response.rating);
+            });
+        }
         document.getElementById('file-option').checked = !response.code_privacy;
+        return [response.rating, response.rating_before_discussion, response.necessity]
     }
 }
 
@@ -107,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // This is the url to redirect the user to when the form is filled
     var return_url = decodeURIComponent(getQueryVariable("returnurl"));
     var user_id = getQueryVariable("userid");
-    checkHistory(user_id, return_url);
+    var rating_history = checkHistory(user_id, return_url);
     // This is the shortened URL of the repository
     var url = decodeURIComponent(getQueryVariable("url"));
     var pr_id = getQueryVariable("prid");
@@ -132,24 +193,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     else {
         document.getElementById('pr-url').textContent = url;
-        var star_count;
+        var star_count = rating_history[0];
         $('[name*="rating1"]').change(function () {
             var me = $(this);
             star_count = me.attr('value');
         });
-        var star_count_nodis;
+        var star_count_nodis = rating_history[1];
         $('[name*="rating2"]').change(function () {
             var me = $(this);
             star_count_nodis = me.attr('value');
         });
-        var necessity;
+        var necessity = rating_history[2];
         $('[name*="rating3"]').change(function () {
             var me = $(this);
             necessity = me.attr('value');
         });
         document.getElementById('submit-button').addEventListener('click', function () {
             var review_time_text = document.getElementById('review-time').value;
-            if (isInt(review_time_text, 10) || review_time_text == "") {
+            if (isInt(review_time_text, 10) || review_time_text === "") {
                 buttonAnimation();
                 sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id, state);
             }
