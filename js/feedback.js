@@ -91,14 +91,15 @@ function checkHistory(user_id, return_url) {
         "pr_url": return_url,
         "user_id": user_id
     }));
-    if (xhr.status == 200) {
-        document.getElementById('negative-text').value = ;
-        document.getElementById('positive-text').value = ;
-        document.getElementById('review-time').value = ;
-        document.getElementById('rating1').value
-        document.getElementById('rating2').value
-        document.getElementById('rating3').value
-        document.getElementById('file-option').checked
+    if (xhr.status == 200 && xhr.responseText != 'null') {
+        var response = JSON.parse(xhr.responseText);
+        document.getElementById('negative-text').value = response.positive_comments;
+        document.getElementById('positive-text').value = response.negative_comments;
+        document.getElementById('review-time').value = response.review_time;
+        document.getElementById('rating1').value = response.rating;
+        document.getElementById('rating2').value = response.rating_before_discussion;
+        document.getElementById('rating3').value = response.necessity;
+        document.getElementById('file-option').checked = !response.code_privacy;
     }
 }
 
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         document.getElementById('submit-button').addEventListener('click', function () {
             var review_time_text = document.getElementById('review-time').value;
-            if (isInt(review_time_text, 10) || review_time_text === "") {
+            if (isInt(review_time_text, 10) || review_time_text == "") {
                 buttonAnimation();
                 sendToDB(star_count, star_count_nodis, necessity, pr_id, repo_id, pr_num, url, return_url, is_private_repo, installation_id, state);
             }
