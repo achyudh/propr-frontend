@@ -1390,7 +1390,7 @@ if (typeof NProgress != 'undefined') {
 				}]
 			});
 			
-		};
+		}
 	   
 		/* DATA TABLES */
 			
@@ -1400,84 +1400,9 @@ if (typeof NProgress != 'undefined') {
 				
 				if( typeof ($.fn.DataTable) === 'undefined'){ return; }
 				console.log('init_DataTables');
-				
-				var handleDataTableButtons = function() {
-				  if ($("#datatable-buttons").length) {
-					$("#datatable-buttons").DataTable({
-					  dom: "Bfrtip",
-					  buttons: [
-						{
-						  extend: "copy",
-						  className: "btn-sm"
-						},
-						{
-						  extend: "csv",
-						  className: "btn-sm"
-						},
-						{
-						  extend: "excel",
-						  className: "btn-sm"
-						},
-						{
-						  extend: "pdfHtml5",
-						  className: "btn-sm"
-						},
-						{
-						  extend: "print",
-						  className: "btn-sm"
-						},
-					  ],
-					  responsive: true
-					});
-				  }
-				};
 
-				TableManageButtons = function() {
-				  "use strict";
-				  return {
-					init: function() {
-					  handleDataTableButtons();
-					}
-				  };
-				}();
-
-				$('#datatable').dataTable();
-
-				$('#datatable-keytable').DataTable({
-				  keys: true
-				});
-
-				$('#datatable-responsive').DataTable();
-
-				$('#datatable-scroller').DataTable({
-				  ajax: "js/datatables/json/scroller-demo.json",
-				  deferRender: true,
-				  scrollY: 380,
-				  scrollCollapse: true,
-				  scroller: true
-				});
-
-				$('#datatable-fixed-header').DataTable({
-				  fixedHeader: true
-				});
-
-				var $datatable = $('#datatable-checkbox');
-
-				$datatable.dataTable({
-				  'order': [[ 1, 'asc' ]],
-				  'columnDefs': [
-					{ orderable: false, targets: [0] }
-				  ]
-				});
-				$datatable.on('draw.dt', function() {
-				  $('checkbox input').iCheck({
-					checkboxClass: 'icheckbox_flat-green'
-				  });
-				});
-
-				TableManageButtons.init();
-				
-		};
+				$('#datatable').DataTable();
+		}
 
 		function getQueryVariable(variable)	{
 				var query = window.location.search.substring(1);
@@ -1491,14 +1416,28 @@ if (typeof NProgress != 'undefined') {
 
 		/* USER PROFILE */
 		function init_userProfile(user_id, user_avatar) {
-			document.getElementById("user_profile_id").textContent=user_id;
+			document.getElementById("user_profile_id").textContent= user_id;
 			document.getElementById("user_profile").href = "https://github.com/" + user_id;
 			document.getElementById("user_avatar").src = user_avatar;
 		}
 
-		/* REPO CHARTS*/
-		function chart_reviewabilityRating() {
-			var ctx = document.getElementById('reviewability_rating').getContext('2d');
+		/* PROFILE TILES */
+		function tile_rating(avg_rating, avg_rating_before_discussion) {
+			document.getElementById("tile_rating").textContent = Number(avg_rating).toFixed(2);
+			document.getElementById("tile_rating_before_discussion").textContent = Number(avg_rating_before_discussion).toFixed(2);
+        }
+
+		function tile_necessity(avg_necessity) {
+			document.getElementById("tile_necessity").textContent = Number(avg_necessity).toFixed(2);
+		}
+
+		function tile_review_time(avg_review_time) {
+			document.getElementById("tile_review_time").textContent = String(Number(avg_review_time).toFixed(2)) + " min.";
+		}
+
+		/* PROFILE CHARTS */
+		function chart_rating(ratings, ratings_bd) {
+			var ctx = document.getElementById('chart_rating').getContext('2d');
 			var chart = new Chart(ctx, {
 					// The type of chart we want to create
 					type: 'bar',
@@ -1507,64 +1446,92 @@ if (typeof NProgress != 'undefined') {
 							labels: ["1", "2", "3", "4", "5"],
 							datasets: [{
 									label: "Before discussion",
-									data: [1, 9, 5, 2, 20],
-									backgroundColor: "#26B99A",
+									data: ratings,
+									backgroundColor: "#26B99A"
 							}, 
 							{
 								label: 'After Discussion',
 								backgroundColor: "#03586A",
-								data: [0, 4, 7, 5, 21]
+								data: ratings_bd
 								}]
 					},
 					// Configuration options go here
 					options: {}
 			});
-		};				
+		}
 
-		function chart_necessityRating() {
-			var ctx = document.getElementById('necessity_rating').getContext('2d');
+		function chart_necessity(necessity) {
+			var ctx = document.getElementById('chart_necessity').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'bar',
 					data: {
 							labels: ["1", "2", "3", "4", "5"],
 							datasets: [{
 									label: "Number of patches",
-									data: [4, 2, 7, 10, 14],
-									backgroundColor: "#26B99A",
+									data: necessity,
+									backgroundColor: "#26B99A"
 							}]
 					},
 					options: {}
 			});
-		};	
+		}
 
-		function chart_reviewTime() {
-			var ctx = document.getElementById('review_time').getContext('2d');
+		function chart_review_time(review_times) {
+			var ctx = document.getElementById('chart_review_time').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'line',
 					data: {
-							labels: ["0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "50", "55", "60"],
+							labels: ["0-5", "5-10", "10-15", "15-20", "20-25", "25-30", "30-35", "35-40", "40-45", "45-50", "50-55", "55-60", "60+"],
 							datasets: [{
 									label: "Number of patches",
-									data: [1, 4, 10, 5, 7, 1, 5, 2, 0, 0, 1, 2, 0, 0],
+									data: review_times,
 									borderColor: "#03586A",
 									backgroundColor: "#B5C8CC",
 									lineTension: 0
 							}]
 					},
-					options: {}
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
 			});
-		};	
+		}
+
+		/* FEEDBACK COMMENTS */
+
+		function positive_comments(positive_comments) {
+
+        }
 	
 	$(document).ready(function() {
 		init_sidebar();
 
-		var user_id = getQueryVariable("user");
-		var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
-		init_userProfile(user_id, user_avatar)
+		// GET PROFILE STATS
+        var user_id = getQueryVariable("userid");
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            "action": "fetch",
+            "user_id": user_id
+        }));
+        if (xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+			tile_rating(response.avg_rating, response.avg_rating_before_discussion);
+			tile_necessity(response.avg_necessity);
+			tile_review_time(response.avg_review_time);
+            chart_rating(response.ratings, response.ratings_before_discussion);
+            chart_necessity(response.necessity_ratings);
+            chart_review_time(response.review_times);
+            positive_comments(response.positive_comments);
+        }
+        else {
+        	// TODO: DISPLAY ERROR MESSAGE HERE
+		}
 
-		chart_reviewabilityRating();
-		chart_necessityRating();
-		chart_reviewTime();
+		// USER PROFILE INIT
+        var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
+        init_userProfile(user_id, user_avatar);
 
 		init_wysiwyg();
 		init_InputMask();
