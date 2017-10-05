@@ -136,10 +136,10 @@ function checkHistory(user_id, return_url) {
         "pr_url": return_url,
         "user_id": user_id
     }));
-    if (xhr.status == 200 && xhr.responseText != 'null') {
+    if (xhr.status == 200) {
         var response = JSON.parse(xhr.responseText);
-        document.getElementById('negative-text').value = response.positive_comments;
-        document.getElementById('positive-text').value = response.negative_comments;
+        document.getElementById('negative-text').value = response.negative_comments;
+        document.getElementById('positive-text').value = response.positive_comments;
         document.getElementById('review-time').value = response.review_time;
         if (response.hasOwnProperty('necessity')) {
             restoreRating3(response.necessity);
@@ -162,6 +162,7 @@ function checkHistory(user_id, return_url) {
         document.getElementById('file-option').checked = !response.code_privacy;
         return [response.rating, response.rating_before_discussion, response.necessity]
     }
+    else return [null, null, null]
 }
 
 document.addEventListener('DOMContentLoaded', function() {
