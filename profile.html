@@ -19,6 +19,8 @@
     <!-- Data Table -->
     <link href="css/responsive.bootstrap.min.css" rel="stylesheet">
     <link href="css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <!--DateRangePicker -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.css" />
     <!-- Theme Style -->
     <link href="css/report.css" rel="stylesheet">
   </head>
@@ -40,7 +42,7 @@
               <div class="menu_section">
                 <ul class="nav side-menu">
                   <li><a href="profile.html"><i class="fa fa-user"></i> Your profile </a></li>
-                  <li><a><i class="fa fa-code-fork"></i>Pull requests</a></li>
+                  <li><a href="#datatable"><i class="fa fa-code-fork"></i>Pull requests</a></li>
                   <li><a><i class="fa fa-book"></i>Repositories<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="repository.html">Webhook-Test</a></li>
@@ -66,7 +68,7 @@
                   
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
                       <li><img src="img/user.png" id="user_avatar" style="width: inherit" alt=""></li>
-                    <li><a href="javascript:;" id="user_profile">View Profile</a></li>
+                      <li><a href="javascript:;" id="user_profile">View Profile</a></li>
                   </ul>
                 </li>
               </ul>
@@ -83,7 +85,9 @@
                 <h1 style="margin-left: 0.5em; margin-bottom: 0.5em;">Your Profile</h1>
               </div>
               <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                <div class="col-md-3 col-sm-6 col-xs-12 form-group pull-right">
+                    Filter by date:
+                    <input type="text" name="daterange" />
                 </div>
               </div>
             </div>
@@ -93,7 +97,7 @@
                 <div class="animated flipInY col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="tile-stats">
                     <div class="icon"><i class="fa fa-star-o"></i></div>
-                    <div class="count" id="tile_rating">NA</div>
+                    <div class="count" id="tile_rating_before_discussion">NA</div>
                     <h3>Rev. pre-discussion</h3>
                     <p>Average reviewability of your patches before discussion</p>
                   </div>
@@ -101,7 +105,7 @@
                 <div class="animated flipInY col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="tile-stats">
                     <div class="icon"><i class="fa fa-comments-o"></i></div>
-                    <div class="count" id="tile_rating_before_discussion">NA</div>
+                    <div class="count" id="tile_rating">NA</div>
                     <h3>Rev. post-discussion</h3>
                     <p>Average reviewability of your patches after discussion</p>
                   </div>
@@ -237,23 +241,7 @@
                                 </tr>
                                 </thead>
 
-                                <tbody>
-                                <tr>
-                                    <td>achyudhk/webhook-test</td>
-                                    <td>9</td>
-                                    <td>4</td>
-                                    <td>3</td>
-                                    <td>5</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>achyudhk/webhook-oauth</td>
-                                    <td>3</td>
-                                    <td>1</td>
-                                    <td>5</td>
-                                    <td>4</td>
-                                    <td>12</td>
-                                </tr>
+                                <tbody id="datatable_body">
                                 </tbody>
                             </table>
                         </div>
@@ -276,6 +264,9 @@
     <script src="js/nprogress.js"></script>
     <!-- ChartJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <!-- DateRangePicker -->
+    <script type="text/javascript" src="js/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
     <!-- DataTables -->
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/dataTables.responsive.min.js"></script>
@@ -283,5 +274,6 @@
     <script src="js/responsive.bootstrap.js"></script>
     <!-- Theme Scripts -->
     <script src="js/profile.js"></script>
+
   </body>
 </html>
