@@ -1498,9 +1498,36 @@ if (typeof NProgress != 'undefined') {
 		}
 
 		/* FEEDBACK COMMENTS */
+		function feedback_comments(comments, field) {
+            var list = document.getElementById(field);
+            for (var i = 0; i < comments.length; i++) {
+            	comment = comments[i];
+            	var excerptP = document.createElement("p");
+            	excerptP.className = "excerpt";
+            	excerptP.textContent = comment[0];
 
-		function positive_comments(positive_comments) {
+                var a = document.createElement('a');
+                a.setAttribute('href', comment[2]);
+                a.innerHTML = comment[1];
 
+            	var bylineDiv = document.createElement("div");
+            	bylineDiv.className = "byline";
+            	bylineDiv.appendChild(a);
+
+				var contentDiv = document.createElement("div");
+				contentDiv.className = "block_content";
+				contentDiv.appendChild(excerptP);
+				contentDiv.appendChild(bylineDiv);
+
+            	var blockDiv = document.createElement("div");
+                blockDiv.className = "block";
+                blockDiv.appendChild(contentDiv);
+
+                var entry = document.createElement('li');
+                entry.appendChild(blockDiv);
+                list.appendChild(entry);
+                list.appendChild(document.createElement('br'))
+			}
         }
 	
 	$(document).ready(function() {
@@ -1523,7 +1550,8 @@ if (typeof NProgress != 'undefined') {
             chart_rating(response.ratings, response.ratings_before_discussion);
             chart_necessity(response.necessity_ratings);
             chart_review_time(response.review_times);
-            positive_comments(response.positive_comments);
+            feedback_comments(response.positive_comments, 'positive_comments');
+            feedback_comments(response.negative_comments, 'negative_comments');
         }
         else {
         	// TODO: DISPLAY ERROR MESSAGE HERE
