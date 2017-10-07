@@ -1025,9 +1025,9 @@ if (typeof NProgress != 'undefined') {
 		}
 
 		/* PROFILE CHARTS */
-		function chart_rating(ratings, ratings_bd) {
+		function chart_rating(ratings, ratings_bd, user_id) {
 			var ctx = document.getElementById('chart_rating').getContext('2d');
-			var chart = new Chart(ctx, {
+            var chart = new Chart(ctx, {
 					// The type of chart we want to create
 					type: 'bar',
 					// The data for our dataset
@@ -1060,11 +1060,27 @@ if (typeof NProgress != 'undefined') {
                 var clickedElementindex = chart.getElementsAtEvent(event)[0]._index;
                 var datasetIndex = chart.getDatasetAtEvent(event)[0]._datasetIndex;
                 $('#rating_modal').iziModal('open');
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "action": "rating", // TODO: Change based on datasetIndex
+                    "user_id": user_id,
+                    "label": chart.data.labels[clickedElementindex]
+                }));
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    remove_children('datatable_modal_body');
+                    datatable_fill(response, 'datatable_modal_body');
+                }
+                else {
+                    // TODO: Display error message
+                }
             });
 			return chart;
 		}
 
-		function chart_necessity(necessity) {
+		function chart_necessity(necessity, user_id) {
 			var ctx = document.getElementById('chart_necessity').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'bar',
@@ -1089,7 +1105,7 @@ if (typeof NProgress != 'undefined') {
 			return chart;
 		}
 
-		function chart_review_time(review_times) {
+		function chart_review_time(review_times, user_id) {
 			var ctx = document.getElementById('chart_review_time').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'line',
@@ -1168,8 +1184,8 @@ if (typeof NProgress != 'undefined') {
         }
 
     /* DATATABLE */
-    function datatable_fill(rows) {
-        var datatable_body = document.getElementById('datatable_body');
+    function datatable_fill(rows, datatable_id) {
+        var datatable_body = document.getElementById(datatable_id);
         for (var i = 0; i < rows.length; i++) {
             var entry = rows[i];
             var tr = document.createElement('tr');
@@ -1206,12 +1222,12 @@ if (typeof NProgress != 'undefined') {
             tile_rating(response.avg_rating, response.avg_rating_before_discussion);
             tile_necessity(response.avg_necessity);
             tile_review_time(response.avg_review_time);
-            chartobj_rating = chart_rating(response.ratings, response.ratings_before_discussion);
-            chartobj_necessity = chart_necessity(response.necessity_ratings);
-            chartobj_review_time = chart_review_time(response.review_times);
+            chartobj_rating = chart_rating(response.ratings, response.ratings_before_discussion, user_id);
+            chartobj_necessity = chart_necessity(response.necessity_ratings, user_id);
+            chartobj_review_time = chart_review_time(response.review_times, user_id);
             feedback_comments(response.positive_comments, 'positive_comments');
             feedback_comments(response.negative_comments, 'negative_comments');
-            datatable_fill(response.datatable);
+            datatable_fill(response.datatable, 'datatable_body');
         }
         else {
         	// TODO: DISPLAY ERROR MESSAGE HERE
@@ -1243,13 +1259,17 @@ if (typeof NProgress != 'undefined') {
                 remove_children('negative_comments');
                 feedback_comments(response.negative_comments, 'negative_comments');
                 remove_children('datatable_body');
-                datatable_fill(response.datatable);
-        }});
+                datatable_fill(response.datatable, 'datatable_body');
+        }
+        else {
+                // TODO: Display ERROR message as iziToast
+            }
+        });
 
         $("#rating_modal").iziModal(
-            {width: 900,
+            {width: 1000,
             radius: 5,
-            padding: 16});
+            padding: 10});
 
         var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
         init_userProfile(user_id, user_avatar);
