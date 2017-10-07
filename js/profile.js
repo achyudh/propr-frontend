@@ -1035,13 +1035,13 @@ if (typeof NProgress != 'undefined') {
 							labels: ["1", "2", "3", "4", "5"],
 							datasets: [{
 									label: "Before discussion",
-									data: ratings,
+									data: ratings_bd,
 									backgroundColor: "#26B99A"
 							}, 
 							{
 								label: 'After Discussion',
 								backgroundColor: "#03586A",
-								data: ratings_bd
+								data: ratings
 								}]
 					},
 					// Configuration options go here
@@ -1059,14 +1059,19 @@ if (typeof NProgress != 'undefined') {
             context.addEventListener('click', function(event) {
                 var clickedElementindex = chart.getElementsAtEvent(event)[0]._index;
                 var datasetIndex = chart.getDatasetAtEvent(event)[0]._datasetIndex;
+                var action = datasetIndex == 0 ? 'rating_before_discussion' : 'rating';
+                var label = chart.data.labels[clickedElementindex];
+                $('#rating_modal').iziModal('setTitle', 'Reviewability rating');
+                $('#rating_modal').iziModal('setSubtitle', 'Patches that were rated ' + label + (datasetIndex == 0 ? ' before discussion': ' after discussion'));
+
                 $('#rating_modal').iziModal('open');
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
-                    "action": "rating", // TODO: Change based on datasetIndex
+                    "action": action,
                     "user_id": user_id,
-                    "label": chart.data.labels[clickedElementindex]
+                    "label": label
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
@@ -1102,6 +1107,30 @@ if (typeof NProgress != 'undefined') {
                         }
                     }
 			});
+            var context = document.getElementById('chart_necessity');
+            context.addEventListener('click', function(event) {
+                var clickedElementindex = chart.getElementsAtEvent(event)[0]._index;
+                var label = chart.data.labels[clickedElementindex];
+                $('#rating_modal').iziModal('setTitle', 'Patch necessity');
+                $('#rating_modal').iziModal('setSubtitle', 'Patches that were rated ' + label);
+                $('#rating_modal').iziModal('open');
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "action": "necessity",
+                    "user_id": user_id,
+                    "label": label
+                }));
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    remove_children('datatable_modal_body');
+                    datatable_fill(response, 'datatable_modal_body');
+                }
+                else {
+                    // TODO: Display error message
+                }
+            });
 			return chart;
 		}
 
@@ -1110,7 +1139,7 @@ if (typeof NProgress != 'undefined') {
 			var chart = new Chart(ctx, {
 					type: 'line',
 					data: {
-							labels: ["0-5", "5-10", "10-15", "15-20", "20-25", "25-30", "30-35", "35-40", "40-45", "45-50", "50-55", "55-60", "60+"],
+							labels: ["0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60+"],
 							datasets: [{
 									label: "Number of patches",
 									data: review_times,
@@ -1131,12 +1160,36 @@ if (typeof NProgress != 'undefined') {
                     }
                 }
 			});
+            var context = document.getElementById('chart_review_time');
+            context.addEventListener('click', function(event) {
+                var clickedElementindex = chart.getElementsAtEvent(event)[0]._index;
+                var label = chart.data.labels[clickedElementindex];
+                $('#rating_modal').iziModal('setTitle', 'Patch review time');
+                $('#rating_modal').iziModal('setSubtitle', 'Patches that took ' + label + ' minutes to review');
+                $('#rating_modal').iziModal('open');
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    "action": "review_time",
+                    "user_id": user_id,
+                    "label": label
+                }));
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    remove_children('datatable_modal_body');
+                    datatable_fill(response, 'datatable_modal_body');
+                }
+                else {
+                    // TODO: Display error message
+                }
+            });
 			return chart;
 		}
 
 		function chart_rating_update(chart, ratings, ratings_bd) {
-            chart.data.datasets[0].data = ratings;
-            chart.data.datasets[1].data = ratings_bd;
+            chart.data.datasets[0].data = ratings_bd;
+            chart.data.datasets[1].data = ratings;
             chart.update();
         }
 
@@ -1269,7 +1322,8 @@ if (typeof NProgress != 'undefined') {
         $("#rating_modal").iziModal(
             {width: 1000,
             radius: 5,
-            padding: 10});
+            padding: 10,
+            headerColor: "#03586A"});
 
         var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
         init_userProfile(user_id, user_avatar);
