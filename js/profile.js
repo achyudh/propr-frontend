@@ -989,7 +989,8 @@ if (typeof NProgress != 'undefined') {
 				if( typeof ($.fn.DataTable) === 'undefined'){ return; }
 				console.log('init_DataTables');
 
-				$('#datatable').DataTable();
+                $('#datatable').DataTable();
+                $('#datatable_modal').DataTable();
 		}
 
 		function getQueryVariable(variable)	{
@@ -1054,6 +1055,13 @@ if (typeof NProgress != 'undefined') {
                         }
                     }
 			});
+            var context = document.getElementById('chart_rating');
+            context.addEventListener('click', function(event) {
+                var clickedElementindex = chart.getElementsAtEvent(event)[0]._index;
+                var datasetIndex = chart.getDatasetAtEvent(event)[0]._datasetIndex;
+                $('#rating_modal').iziModal('open');
+            });
+			return chart;
 		}
 
 		function chart_necessity(necessity) {
@@ -1078,6 +1086,7 @@ if (typeof NProgress != 'undefined') {
                         }
                     }
 			});
+			return chart;
 		}
 
 		function chart_review_time(review_times) {
@@ -1106,9 +1115,26 @@ if (typeof NProgress != 'undefined') {
                     }
                 }
 			});
+			return chart;
 		}
 
-		/* FEEDBACK COMMENTS */
+		function chart_rating_update(chart, ratings, ratings_bd) {
+            chart.data.datasets[0].data = ratings;
+            chart.data.datasets[1].data = ratings_bd;
+            chart.update();
+        }
+
+        function chart_necessity_update(chart, necessity) {
+            chart.data.datasets[0].data = necessity;
+            chart.update();
+        }
+
+        function chart_review_time_update(chart, review_times) {
+            chart.data.datasets[0].data = review_times;
+            chart.update();
+        }
+
+        /* FEEDBACK COMMENTS */
 		function feedback_comments(comments, field) {
             var list = document.getElementById(field);
             for (var i = 0; i < comments.length; i++) {
@@ -1155,6 +1181,12 @@ if (typeof NProgress != 'undefined') {
             datatable_body.appendChild(tr);
         }
     }
+    function remove_children(nodeid) {
+        var myNode = document.getElementById(nodeid);
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+    }
 	
 	$(document).ready(function() {
 		init_sidebar();
@@ -1162,6 +1194,7 @@ if (typeof NProgress != 'undefined') {
 		// GET PROFILE STATS
         var user_id = getQueryVariable("userid");
         var xhr = new XMLHttpRequest();
+        var chartobj_rating, chartobj_necessity, chartobj_review_time;
         xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
@@ -1170,15 +1203,15 @@ if (typeof NProgress != 'undefined') {
         }));
         if (xhr.status == 200) {
             var response = JSON.parse(xhr.responseText);
-			tile_rating(response.avg_rating, response.avg_rating_before_discussion);
-			tile_necessity(response.avg_necessity);
-			tile_review_time(response.avg_review_time);
-            chart_rating(response.ratings, response.ratings_before_discussion);
-            chart_necessity(response.necessity_ratings);
-            chart_review_time(response.review_times);
+            tile_rating(response.avg_rating, response.avg_rating_before_discussion);
+            tile_necessity(response.avg_necessity);
+            tile_review_time(response.avg_review_time);
+            chartobj_rating = chart_rating(response.ratings, response.ratings_before_discussion);
+            chartobj_necessity = chart_necessity(response.necessity_ratings);
+            chartobj_review_time = chart_review_time(response.review_times);
             feedback_comments(response.positive_comments, 'positive_comments');
             feedback_comments(response.negative_comments, 'negative_comments');
-            datatable_fill(response.datatable)
+            datatable_fill(response.datatable);
         }
         else {
         	// TODO: DISPLAY ERROR MESSAGE HERE
@@ -1187,13 +1220,12 @@ if (typeof NProgress != 'undefined') {
 		// DATE & USER PROFILE INIT
         $('input[name="daterange"]').daterangepicker();
         $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-
             var user_id = getQueryVariable("userid");
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
-                "action": "profile_ranged",
+                "action": "fetch_ranged",
                 "user_id": user_id,
                 "start_date": picker.startDate.format('YYYY-MM-DD'),
                 "end_date": picker.endDate.format('YYYY-MM-DD')
@@ -1203,16 +1235,26 @@ if (typeof NProgress != 'undefined') {
                 tile_rating(response.avg_rating, response.avg_rating_before_discussion);
                 tile_necessity(response.avg_necessity);
                 tile_review_time(response.avg_review_time);
-                chart_rating(response.ratings, response.ratings_before_discussion);
-                chart_necessity(response.necessity_ratings);
-                chart_review_time(response.review_times);
+                chart_rating_update(chartobj_rating, response.ratings, response.ratings_before_discussion);
+                chart_necessity_update(chartobj_necessity, response.necessity_ratings);
+                chart_review_time_update(chartobj_review_time, response.review_times);
+                remove_children('positive_comments');
                 feedback_comments(response.positive_comments, 'positive_comments');
+                remove_children('negative_comments');
                 feedback_comments(response.negative_comments, 'negative_comments');
-                datatable_fill(response.datatable)
+                remove_children('datatable_body');
+                datatable_fill(response.datatable);
         }});
+
+        $("#rating_modal").iziModal(
+            {width: 900,
+            radius: 5,
+            padding: 16});
+
         var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
         init_userProfile(user_id, user_avatar);
 
+        init_DataTables();
 		init_wysiwyg();
 		init_InputMask();
 		init_cropper();
@@ -1222,7 +1264,6 @@ if (typeof NProgress != 'undefined') {
 		init_SmartWizard();
 		init_select2();
 		init_validator();
-		init_DataTables();
 		init_PNotify();
 		init_CustomNotification();
 		init_autosize();				
