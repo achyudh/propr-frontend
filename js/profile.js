@@ -1046,6 +1046,13 @@ if (typeof NProgress != 'undefined') {
 					},
 					// Configuration options go here
 					options: {
+                        layout: {
+                            padding: {
+                                left: 4,
+                                right: 4,
+                                top: 4,
+                                bottom: 4
+                            }},
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -1098,6 +1105,13 @@ if (typeof NProgress != 'undefined') {
 							}]
 					},
 					options: {
+                        layout: {
+                            padding: {
+                                left: 4,
+                                right: 4,
+                                top: 4,
+                                bottom: 4
+                            }},
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -1149,6 +1163,13 @@ if (typeof NProgress != 'undefined') {
 							}]
 					},
                 options: {
+                    layout: {
+                    padding: {
+                        left: 4,
+                        right: 4,
+                        top: 4,
+                        bottom: 4
+                    }},
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -1270,6 +1291,7 @@ if (typeof NProgress != 'undefined') {
             "action": "fetch",
             "user_id": user_id
         }));
+        $("#modal_login").iziModal();
         if (xhr.status == 200) {
             var response = JSON.parse(xhr.responseText);
             tile_rating(response.avg_rating, response.avg_rating_before_discussion);
@@ -1281,6 +1303,11 @@ if (typeof NProgress != 'undefined') {
             feedback_comments(response.positive_comments, 'positive_comments');
             feedback_comments(response.negative_comments, 'negative_comments');
             datatable_fill(response.datatable, 'datatable_body');
+            var user_login = response.user_id;
+            var avatar_url = response.avatar_url
+        }
+        else if (xhr.status == 403) {
+            $("#modal_login").iziModal('open');
         }
         else {
         	// TODO: DISPLAY ERROR MESSAGE HERE
@@ -1325,8 +1352,7 @@ if (typeof NProgress != 'undefined') {
             padding: 10,
             headerColor: "#03586A"});
 
-        var user_avatar = decodeURIComponent(getQueryVariable("avatar"));
-        init_userProfile(user_id, user_avatar);
+        init_userProfile(user_login, avatar_url);
 
         init_DataTables();
 		init_wysiwyg();

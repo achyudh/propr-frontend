@@ -80,6 +80,18 @@
         <!-- /top navigation -->
 
         <!-- page content -->
+          <div id="modal_login" role="dialog" class="iziModal"
+               style="z-index: 999; border-radius: 3px; border-bottom: 3px solid rgb(189, 91, 91); overflow: hidden; max-height: 145px; display: none;">
+              <div class="iziModal-header" style="background: rgb(189, 91, 91); padding-right: 44px;">
+                  <i class="iziModal-header-icon fa fa-user"></i>
+                  <h2 class="iziModal-header-title">User authentication failed!</h2>
+                  <p class="iziModal-header-subtitle">We were not able to validate your profile.</p>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 75px;">
+                  <a class="btn btn-default" href="http://chennai.ewi.tudelft.nl:60002/login"><i class="fa fa-github" aria-hidden="true"></i> Login with GitHub</a>
+              </div>
+          </div>
+
         <div class="right_col" role="main">
           <div class="row">
             <div class="page-title">
