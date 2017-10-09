@@ -1,7 +1,7 @@
 # Pull Request Reviewability Website
 This website is used to collect data from developers when they are reviewing Github pull requests in order to determine what makes a code change reviewable, and display the collected results to them as a report.
 
-Thhis website serves multiple purposes:
+This website serves multiple purposes:
 ### index.html:
 This is a landing page that helps describe the installation and the usage of the feedback tool and generation of the personalized report.
 ### profile.html:
