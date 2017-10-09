@@ -930,7 +930,7 @@ if (typeof NProgress != 'undefined') {
 		function init_CustomNotification() {
 			
 			console.log('run_customtabs');
-			
+
 			if( typeof (CustomTabs) === 'undefined'){ return; }
 			console.log('init_CustomTabs');
 			
@@ -980,18 +980,6 @@ if (typeof NProgress != 'undefined') {
 			  $('#notif-group div').first().css('display', 'block');
 			});
 		}
-	   
-		/* DATA TABLES */
-			function init_DataTables() {
-				
-				console.log('run_datatables');
-				
-				if( typeof ($.fn.DataTable) === 'undefined'){ return; }
-				console.log('init_DataTables');
-
-                $('#datatable').DataTable();
-                $('#datatable_modal').DataTable();
-		}
 
 		function getQueryVariable(variable)	{
 				var query = window.location.search.substring(1);
@@ -1025,7 +1013,7 @@ if (typeof NProgress != 'undefined') {
 		}
 
 		/* PROFILE CHARTS */
-		function chart_rating(ratings, ratings_bd, user_id) {
+		function chart_rating(ratings, ratings_bd, user_id, datatable_modal) {
 			var ctx = document.getElementById('chart_rating').getContext('2d');
             var chart = new Chart(ctx, {
 					// The type of chart we want to create
@@ -1070,20 +1058,19 @@ if (typeof NProgress != 'undefined') {
                 var label = chart.data.labels[clickedElementindex];
                 $('#rating_modal').iziModal('setTitle', 'Reviewability rating');
                 $('#rating_modal').iziModal('setSubtitle', 'Patches that were rated ' + label + (datasetIndex == 0 ? ' before discussion': ' after discussion'));
-
                 $('#rating_modal').iziModal('open');
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
-                    "action": action,
+                    "param": action,
                     "user_id": user_id,
                     "label": label
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
-                    remove_children('datatable_modal_body');
-                    datatable_fill(response, 'datatable_modal_body');
+                    datatable_clear(datatable_modal);
+                    datatable_fill(response, datatable_modal);
                 }
                 else {
                     // TODO: Display error message
@@ -1092,7 +1079,7 @@ if (typeof NProgress != 'undefined') {
 			return chart;
 		}
 
-		function chart_necessity(necessity, user_id) {
+		function chart_necessity(necessity, user_id, datatable_modal) {
 			var ctx = document.getElementById('chart_necessity').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'bar',
@@ -1132,14 +1119,14 @@ if (typeof NProgress != 'undefined') {
                 xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
-                    "action": "necessity",
+                    "param": "necessity",
                     "user_id": user_id,
                     "label": label
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
-                    remove_children('datatable_modal_body');
-                    datatable_fill(response, 'datatable_modal_body');
+                    datatable_clear(datatable_modal);
+                    datatable_fill(response, datatable_modal);
                 }
                 else {
                     // TODO: Display error message
@@ -1148,7 +1135,7 @@ if (typeof NProgress != 'undefined') {
 			return chart;
 		}
 
-		function chart_review_time(review_times, user_id) {
+		function chart_review_time(review_times, user_id, datatable_modal) {
 			var ctx = document.getElementById('chart_review_time').getContext('2d');
 			var chart = new Chart(ctx, {
 					type: 'line',
@@ -1192,14 +1179,14 @@ if (typeof NProgress != 'undefined') {
                 xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/modal", false);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
-                    "action": "review_time",
+                    "param": "review_time",
                     "user_id": user_id,
                     "label": label
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
-                    remove_children('datatable_modal_body');
-                    datatable_fill(response, 'datatable_modal_body');
+                    remove_children(datatable_modal);
+                    datatable_fill(response, datatable_modal);
                 }
                 else {
                     // TODO: Display error message
@@ -1258,19 +1245,14 @@ if (typeof NProgress != 'undefined') {
         }
 
     /* DATATABLE */
-    function datatable_fill(rows, datatable_id) {
-        var datatable_body = document.getElementById(datatable_id);
-        for (var i = 0; i < rows.length; i++) {
-            var entry = rows[i];
-            var tr = document.createElement('tr');
-            for (var j = 0; j < entry.length; j++) {
-                var td = document.createElement('td');
-                td.innerHTML = entry[j];
-                tr.appendChild(td);
-            }
-            datatable_body.appendChild(tr);
-        }
+    function datatable_fill(rows, datatable_obj) {
+            datatable_obj.rows.add(rows).draw()
     }
+
+    function datatable_clear(datatable_obj) {
+        datatable_obj.clear();
+    }
+
     function remove_children(nodeid) {
         var myNode = document.getElementById(nodeid);
         while (myNode.firstChild) {
@@ -1285,6 +1267,17 @@ if (typeof NProgress != 'undefined') {
         var user_id = getQueryVariable("userid");
         var xhr = new XMLHttpRequest();
         var chartobj_rating, chartobj_necessity, chartobj_review_time;
+
+        // INIT Datatable
+        $("#rating_modal").iziModal(
+            {width: 1000,
+                radius: 5,
+                padding: 10,
+                headerColor: "#03586A"});
+        var datatable_main = $('#datatable').DataTable();
+        $('#rating_modal').iziModal('open');
+        var datatable_modal = $('#datatable_modal').DataTable();
+        $('#rating_modal').iziModal('close');
         xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
@@ -1297,12 +1290,12 @@ if (typeof NProgress != 'undefined') {
             tile_rating(response.avg_rating, response.avg_rating_before_discussion);
             tile_necessity(response.avg_necessity);
             tile_review_time(response.avg_review_time);
-            chartobj_rating = chart_rating(response.ratings, response.ratings_before_discussion, user_id);
-            chartobj_necessity = chart_necessity(response.necessity_ratings, user_id);
-            chartobj_review_time = chart_review_time(response.review_times, user_id);
+            chartobj_rating = chart_rating(response.ratings, response.ratings_before_discussion, user_id, datatable_modal);
+            chartobj_necessity = chart_necessity(response.necessity_ratings, user_id, datatable_modal);
+            chartobj_review_time = chart_review_time(response.review_times, user_id, datatable_modal);
             feedback_comments(response.positive_comments, 'positive_comments');
             feedback_comments(response.negative_comments, 'negative_comments');
-            datatable_fill(response.datatable, 'datatable_body');
+            datatable_fill(response.datatable, datatable_main);
             var user_login = response.user_id;
             var avatar_url = response.avatar_url
         }
@@ -1310,8 +1303,8 @@ if (typeof NProgress != 'undefined') {
             $("#modal_login").iziModal('open');
         }
         else {
-        	// TODO: DISPLAY ERROR MESSAGE HERE
-		}
+            // TODO: DISPLAY ERROR MESSAGE HERE
+        }
 
 		// DATE & USER PROFILE INIT
         $('input[name="daterange"]').daterangepicker();
@@ -1338,23 +1331,16 @@ if (typeof NProgress != 'undefined') {
                 feedback_comments(response.positive_comments, 'positive_comments');
                 remove_children('negative_comments');
                 feedback_comments(response.negative_comments, 'negative_comments');
-                remove_children('datatable_body');
-                datatable_fill(response.datatable, 'datatable_body');
+                datatable_clear(datatable_main);
+                datatable_fill(response.datatable, datatable_main);
         }
         else {
                 // TODO: Display ERROR message as iziToast
             }
         });
 
-        $("#rating_modal").iziModal(
-            {width: 1000,
-            radius: 5,
-            padding: 10,
-            headerColor: "#03586A"});
-
         init_userProfile(user_login, avatar_url);
 
-        init_DataTables();
 		init_wysiwyg();
 		init_InputMask();
 		init_cropper();
