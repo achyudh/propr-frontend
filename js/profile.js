@@ -1,3 +1,7 @@
+var isRanged = false;
+var range_start_date = null;
+var range_end_date = null;
+
 /**
  * Resize function without multiple trigger
  * 
@@ -1065,7 +1069,8 @@ if (typeof NProgress != 'undefined') {
                 xhr.send(JSON.stringify({
                     "param": action,
                     "user_id": user_id,
-                    "label": label
+                    "label": label,
+                    "action": "fetch"
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
@@ -1121,7 +1126,8 @@ if (typeof NProgress != 'undefined') {
                 xhr.send(JSON.stringify({
                     "param": "necessity",
                     "user_id": user_id,
-                    "label": label
+                    "label": label,
+                    "action": "fetch"
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
@@ -1181,11 +1187,14 @@ if (typeof NProgress != 'undefined') {
                 xhr.send(JSON.stringify({
                     "param": "review_time",
                     "user_id": user_id,
-                    "label": label
+                    "label": label,
+					"action": isRanged ? "fetch_ranged" : "fetch",
+					"start_date": range_start_date,
+					"end_date": range_end_date
                 }));
                 if (xhr.status == 200) {
                     var response = JSON.parse(xhr.responseText);
-                    remove_children(datatable_modal);
+                    datatable_clear(datatable_modal);
                     datatable_fill(response, datatable_modal);
                 }
                 else {
@@ -1259,9 +1268,55 @@ if (typeof NProgress != 'undefined') {
             myNode.removeChild(myNode.firstChild);
         }
     }
+
+    function init_repo_menu(response, user_id, chartobj_rating, chartobj_necessity, chartobj_review_time, datatable_main) {
+    	var div = document.getElementById('repo_menu');
+        for (var i = 0; i < response.length; i++) {
+        	var list_el = document.createElement('li');
+            var link = document.createElement('a');
+            link.setAttribute('href', '#');
+            link.innerHTML = response[i];
+            link.onclick = (function() {
+                var current_repo = response[i];
+                return function() {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/repo", false);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify({
+                        "action": isRanged ? "fetch_ranged" : "fetch",
+                        "user_id": user_id,
+						"repo_name": current_repo,
+                        "start_date": range_start_date,
+                        "end_date": range_end_date
+                    }));
+                    if (xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        tile_rating(response.avg_rating, response.avg_rating_before_discussion);
+                        tile_necessity(response.avg_necessity);
+                        tile_review_time(response.avg_review_time);
+                        chart_rating_update(chartobj_rating, response.ratings, response.ratings_before_discussion);
+                        chart_necessity_update(chartobj_necessity, response.necessity_ratings);
+                        chart_review_time_update(chartobj_review_time, response.review_times);
+                        remove_children('positive_comments');
+                        feedback_comments(response.positive_comments, 'positive_comments');
+                        remove_children('negative_comments');
+                        feedback_comments(response.negative_comments, 'negative_comments');
+                        datatable_clear(datatable_main);
+                        datatable_fill(response.datatable, datatable_main);
+                    }
+                    else {
+                        // TODO: Display ERROR message as iziToast
+                    }
+                }
+            })();
+            list_el.appendChild(link);
+            div.appendChild(list_el);
+        }
+    }
 	
 	$(document).ready(function() {
 		init_sidebar();
+		document.getElementById('profile_menu').href = window.location.href;
 
 		// GET PROFILE STATS
         var user_id = getQueryVariable("userid");
@@ -1269,22 +1324,22 @@ if (typeof NProgress != 'undefined') {
         var chartobj_rating, chartobj_necessity, chartobj_review_time;
 
         // INIT Datatable
+        var datatable_main = $('#datatable').DataTable();
         $("#rating_modal").iziModal(
             {width: 1000,
                 radius: 5,
                 padding: 10,
                 headerColor: "#03586A"});
-        var datatable_main = $('#datatable').DataTable();
         $('#rating_modal').iziModal('open');
         var datatable_modal = $('#datatable_modal').DataTable();
         $('#rating_modal').iziModal('close');
+        $("#modal_login").iziModal();
         xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
             "action": "fetch",
             "user_id": user_id
         }));
-        $("#modal_login").iziModal();
         if (xhr.status == 200) {
             var response = JSON.parse(xhr.responseText);
             tile_rating(response.avg_rating, response.avg_rating_before_discussion);
@@ -1306,9 +1361,28 @@ if (typeof NProgress != 'undefined') {
             // TODO: DISPLAY ERROR MESSAGE HERE
         }
 
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/repo", false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            "action": "fetch_info",
+            "user_id": user_id,
+        }));
+        if (xhr.status == 200) {
+            response = JSON.parse(xhr.responseText);
+            init_repo_menu(response, user_id, chartobj_rating, chartobj_necessity, chartobj_review_time, datatable_main);
+        }
+        else {
+            // TODO: Display ERROR message as iziToast
+        }
+
+
 		// DATE & USER PROFILE INIT
         $('input[name="daterange"]').daterangepicker();
         $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+        	isRanged = true;
+        	range_start_date = picker.startDate.format('YYYY-MM-DD');
+        	range_end_date = picker.endDate.format('YYYY-MM-DD');
             var user_id = getQueryVariable("userid");
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://chennai.ewi.tudelft.nl:60003/profile", false);
@@ -1316,8 +1390,8 @@ if (typeof NProgress != 'undefined') {
             xhr.send(JSON.stringify({
                 "action": "fetch_ranged",
                 "user_id": user_id,
-                "start_date": picker.startDate.format('YYYY-MM-DD'),
-                "end_date": picker.endDate.format('YYYY-MM-DD')
+                "start_date": range_start_date,
+                "end_date": range_end_date
             }));
             if (xhr.status == 200) {
                 var response = JSON.parse(xhr.responseText);
