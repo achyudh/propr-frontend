@@ -13,8 +13,10 @@ The personalized report that is generated for every repository that participates
 
 ### report.html
 A login page for GitHub OAuth authentication to verify user credentials to generate the report
+
 ![](https://github.com/achyudhk/Propr-Website/blob/master/img/report.png)
 
 ### feedback.html
 A feedback form that collects the pull request reviewability feedback information
+
 ![](https://github.com/achyudhk/Propr-Website/blob/master/img/form.png)
