@@ -1,179 +1,124 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Landing page">
-    <title>Propr</title>
-    <style>
-        /*
-            Consider adding styles to the css folder
-            All existing styles havebeen moved to a separate CSS file for clarity
-        */
-        body {
-            background: url(img/cream_dust.png) repeat 0 0;
-        }
-    </style>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Propr</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">		
+		<!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie8.css" /><![endif]-->
+	</head>
+	<body>
 
-    <!-- Pure CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
-    <!--<![endif]-->
+		<!-- Wrapper -->
+			<div id="wrapper">
 
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="css/layouts/landing-old-ie.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="css/layouts/landing.css">
-    <!--<![endif]-->
-</head>
-<body>
+				<!-- Header -->
+					<header id="header" class="alt">
+						<span class="logo"><img src="img/propr_logo_circle.svg" alt="" /></span>
+						<h1>Pro<b style="font-weight: 900;">pr</b></h1>
+						<p>Assess pull request reviewability.</p>
+						<a href="https://github.com/apps/propr" class="button icon fa-github">Get Started</a>
+					</header>
 
-<div id="layout" class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-        <br style="line-height: 400%;">
-        <img class="pure-img" style="max-width: 80%; display: block; margin: 0 auto;" src="img/propr_logo.png">
-        <div class="header">
-            <h1 class="brand-title">Assess reviewability</h1>
-            <h2 class="brand-tagline">Enable propr for your repo</h2>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a class="pure-button" href="https://github.com/apps/propr">Login with Github</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+				<!-- Main -->
+					<div id="main">
 
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div class="posts">
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">Introduction</h2>
-                    </header>
-                    <div class="post-description">
-                        This is a plugin that collects feedback on the reviewability of pull requests from the reviewers. Whenever a pull request merged or closed in a repository for which you have enabled this app, our bot posts a link to a feedback form in the pull request discussion page. We use the collected data to gain insights on what makes pull requests reviewable and help developers create more reviewable patches. If you have already installed our plugin, check out <a href="http://chennai.ewi.tudelft.nl:60001/report.html">your report</a> to see how well you and your pull requests are doing.
-                    </div>
-                </section>
-        </div>
-        <br>
-        <div>
-            <!-- A wrapper for all the posts -->
-            <div class="posts">
-                <h1 class="content-subhead">Initial Setup Instructions</h1>
+						<!-- Introduction -->
+							<section id="intro" class="main">
+								<div class="spotlight">
+									<div class="content">
+										<header class="major">
+											<h2>Something for everyone</h2>
+										</header>
+										<p>If you are an integrator who has longed for a way to anonymously provide feedback to the contributors, specifically on how they could make their pull requests easier to review, this is the right platform for you. <br> <br>
+										If you are a developer contributing to a project that uses propr and you want to know how your pull requests fare, you should check out the reports dashboard.</p>
+										<ul class="actions">
+											<li><a href="report.html" class="button">Reports Dashboard</a></li>
+										</ul>
+									</div>
+									<img style="max-width: 40%; padding-left: 2em" src="img/reports_logo.png" alt="" />
+								</div>
+							</section>
 
-                <section class="post">
-                    <header class="post-header">
+						<!-- First Section -->
+							<section id="first" class="main special">
+								<header class="major">
+									<h2>Your workflow, your rules</h2>
+								</header>
+								<ul class="features">
+									<li>
+										<span class="icon major style5 fa-list-alt"></span>
+										<h3>We aren't intrusive</h3>
+										<p>We don’t touch your code and only post a feedback link when pull requests are closed. Your workflow is unaffected.</p>
+									</li>
+									<li>
+										<span class="icon major style5 fa-lock"></span>
+										<h3>We value your privacy</h3>
+										<p>We don’t store any personal information such as your email address or name and all feedback is collected anonymously.</p>
+									</li>
+									<li>
+										<span class="icon major style5 fa-user-secret"></span>
+										<h3>Private repo? No issues</h3>
+										<p>Only collaborators whom you have rated would be able to see their pull requests. You choose how much data you share. </p>
+									</li>
+								</ul>
+							</section>
 
-                        <h2 class="post-title">Recommended method: Authorize our app through Github</h2>
+						<!-- Second Section -->
+							<section id="second" class="main special">
+								<header class="major">
+									<h2>How does it work?</h2>
+									<p>Can this be used as a platform to anonymously provide feedback on how the contributors could improve their pull requests? Yes, but there is so much more to it!</p>
+								</header>
+								
+								<p class="content">When one of the project maintainers close a pull request in a project that uses propr, our bot comments on the pull request with a feedback link. The short feedback survey has two open ended questions and three rating bars, all of which are optional. Filling the form is pretty much the last thing project managers and integrators have to do. <br>
+								The reports dashboard collates feedback from integrators and project managers over multiple pull requests and a range of projects. Contributors to projects that use propr can readily see how their pull requests are doing, and how they can improve them. This is our way of ensuring that every feedback reaches the contributors!
+								</p>
+								<footer class="major">
+										<ul class="actions">
+											<li><a href="setup.html" class="button">Learn More</a></li>
+										</ul>
+									</footer>
+							</section>
 
-                    </header>
+						<!-- Get Started -->
+							<section id="cta" class="main special">
+								<header class="major">
+									<h2>You get to choose how to set it up</h2>
+									<p>If you don't like the one-size-fits-all GitHub App installation, you can setup a webhook to connect our servers. That way, you get to monitor every bit of data that gets sent.<br>
+									<span style="font-size: 0.7em">(Psst, we restrict ourselves to the pull request auth scope)</span></p>
+								</header>
+								<footer class="major">
+									<ul class="actions">
+										<li><a href="https://github.com/apps/propr" class="button special icon fa-github">Get Started</a></li>
+										<li><a href="setup.html" class="button">Webhook Setup</a></li>
+									</ul>
+								</footer>
+							</section>
 
-                    <div class="post-description">
-                                <ul>
-                                    <li>Authorize our app by logging into Github <a href="https://github.com/apps/propr">here</a></li>
-                                    <li>Select your repos for which you'd like to enable PR Feedback when prompted</a></li>
-                                    <li>Don't forget to fill in your feedback on the link posted by our bot whenever you close a PR</a></li>
-                                </ul>
-                    </div>
-                </section>
-                <section class="post">
-                    <header class="post-header">
+					</div>
 
-                        <h2 class="post-title">Alternative setup: Add a webhook that connects to our servlet</h2>
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<h2>About us</h2>
+							<p>We are a group of researchers from the Software Engineering Research Group (SERG) at the Delft University of Technology. We set out to find out what factors contribute to the “reviewability” of pull requests submitted to open source projects and in the process ended up creating <b>propr</b>.</p>
+						</section>
+					</footer>
 
-                    </header>
-                    <div class="post-description">
-                        <ul>
-                            <li><h3>For private repositories:</h3>
-                                <ul>
-                                    <li>To add a collaborator go to Settings, then Webhooks from your repository</li>
-                                    <li>Add <i>prfeedback</i> as a collaborator by using the user search box at the bottom of the page.</li>
-                                    <li>Continue setting up the webhook as described for public repositories in the next section</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <ul>
-                            <li><h3>For public repositories:</h3>
-                                <ul>
-                                    <li>Add a webhook by going to Settings, then Webhooks from your repository</li>
-                                    <li>Set the payload URL to the address <i>http://chennai.ewi.tudelft.nl:60002/webhook</i></li>
-                                    <li>Set the content type to <i>application/json</i></li>
-                                    <li>Ensure that the only data that is being sent over is that related to Pull Requests. To see more about how to setup webhooks, see <a href="https://developer.github.com/webhooks/creating/">this page</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </section>
-            </div>
-        </div>
-        <br>
-        <div class="posts">
-            <h1 class="content-subhead">How it works</h1>
-            <br>
-            <section class="post">
-                <div class="pure-g">
-                    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
-                        <div class="l-box">
-                            <header class="post-header">
-                                <h3>Click on the feedback link</h3>
-                            </header>
-                            <br>
-                            <div class="post-description" style="margin-right: 1em">
-                                When one of the project maintainers close a pull request, our bot comments on the pull request with a feedback link. Please note that you might have to refresh the page to see this link.
-                            </div>
-                        </div>
-                    </div>
+			</div>
 
-                    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
-                        <div class="l-box">
-                            <header class="post-header">
-                                <h3>Fill out the feedback form</h3>
-                            </header>
-                            <br>
-                            <div class="post-description">
-                                The short feedback survey has two open ended questions and three rating bars, all of which are optional. But we would appreciate it if you answered all of them. After all, more data leads to better personal reports.
-                            </div>
-                        </div>
-                    </div>
+		<!-- Scripts -->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.scrollex.min.js"></script>
+		<script src="js/jquery.scrolly.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/util.js"></script>
+		<!--[if lte IE 8]><script src="js/ie/respond.min.js"></script><![endif]-->
+		<script src="js/main.js"></script>
 
-                    <div class="pure-u-1">
-                        <br>
-                        <img class="pure-img rcorners" src="img/form.png">
-                        <br>
-                    </div>
-
-                    <div class="pure-u-1">
-                        <div class="l-box">
-                            <header class="post-header">
-                                <h3>Check out your personal report</h3>
-                            </header>
-                            <br>
-                            <div class="post-description">
-                                If you have contributed to a repository, or if you have installed our app for one of your repositories, you can check out the comprehensive report we have generated for you based on the feedback provided by the maintainers on the pull requests. If you are the owner of the repository you can view the feedback on all the pull requests submitted by all contributors. To see your report, just head over to <a href="http://chennai.ewi.tudelft.nl:60001/report.html">this page.</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pure-u-1">
-                        <br>
-                        <img class="pure-img rcorners" src="img/report.png">
-                        <br>
-                    </div>
-                </div>
-            </section>
-            <p style="font-size: 100%; color: #aaa;"><b>Privacy statement:</b> We don't store any personal information such as your email address or name.
-                We ask for GitHub authentication as an anonymous identifier to account for duplicate feedback entries and to see people specific preferences.</p>
-        </div>
-    </div>
-</div>
-
-</body>
+	</body>
 </html>
